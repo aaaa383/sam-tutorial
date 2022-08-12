@@ -15,5 +15,4 @@ runs:
             --stack-name pkg-deploy-resources-${GITHUB_REF#refs/heads/} \
             --s3-bucket pkg-deploy-bucket-${GITHUB_REF#refs/heads/} \
             --parameter-overrides EnvName=${GITHUB_REF#refs/heads/} \
-                                  CloudWatchAlarmEmail=${{ inputs.AWS_CLOUDWATCH_ALARM_EMAIL }}
       shell: bash

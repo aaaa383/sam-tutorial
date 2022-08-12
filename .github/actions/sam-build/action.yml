@@ -12,5 +12,4 @@ runs:
     - run: |
         sam build --use-container \
             --parameter-overrides EnvName=${GITHUB_REF#refs/heads/}\
-                                  CloudWatchAlarmEmail=${{ inputs.AWS_CLOUDWATCH_ALARM_EMAIL }}
       shell: bash
