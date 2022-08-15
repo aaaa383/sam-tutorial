@@ -12,7 +12,7 @@ Resources:
   StreamDataBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "tutorial-stream-data-bucket-${EnvName}"
+      BucketName: !Sub "tutorialtest-stream-data-bucket-${EnvName}"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
