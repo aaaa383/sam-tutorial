@@ -109,7 +109,7 @@ Resources:
     Properties:
       DeliveryStreamName: test_user3  
       ExtendedS3DestinationConfiguration:
-        BucketARN: arn:aws:s3:::akane-test-deploy-bucket-develop
+        BucketARN: !Sub arn:aws:s3:::"akane-test-deploy-bucket-${EnvName}"
         Prefix: "userActivitylog/key=!{partitionKeyFromQuery:key1}/!{timestamp:'year='yyyy'/month='MM'/day='dd'/hour='HH}/"
         ErrorOutputPrefix: error/
         BufferingHints:
