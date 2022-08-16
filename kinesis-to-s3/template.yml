@@ -108,9 +108,10 @@ Resources:
     Type: AWS::KinesisFirehose::DeliveryStream
     Properties:
       DeliveryStreamName: test_user3  
+      DeliveryStreamType: DirectPut
       ExtendedS3DestinationConfiguration:
         BucketARN: !Sub "arn:aws:s3:::akane-test-deploy-bucket-${EnvName}"
-        Prefix: "userActivitylog/key=!{partitionKeyFromQuery:key1}/!{timestamp:'year='yyyy'/month='MM'/day='dd'/hour='HH}/"
+        Prefix: "uuid/!{partitionKeyFromQuery:uuid}/!{timestamp:'year='yyyy'/month='MM'/day='dd'/hour='HH}/"
         ErrorOutputPrefix: error/
         BufferingHints:
           IntervalInSeconds: 60
@@ -134,7 +135,7 @@ Resources:
             - Type: MetadataExtraction
               Parameters:
                 - ParameterName: MetadataExtractionQuery
-                  ParameterValue: '{key1: .key1}'
+                  ParameterValue: '{uuid: .uuid}'
                 - ParameterName: JsonParsingEngine
                   ParameterValue: JQ-1.6
             - Type: AppendDelimiterToRecord
@@ -146,6 +147,7 @@ Resources:
 # ------------------------------------------------------------#
 # Kinesis Data Firehose Error LogGroup (CloudWatch Logs)
 # ------------------------------------------------------------#
+
   LogGroupFirehoseActivityLogs:
     Type: AWS::Logs::LogGroup
     Properties:
