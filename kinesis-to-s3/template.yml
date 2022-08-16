@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: CloudFormation template 
+Description:  > 
+  CloudFormation template 
 
 Parameters:
   EnvName:
@@ -103,7 +104,7 @@ Resources:
 # Kinesis Data Firehose delivery stream
 # ------------------------------------------------------------#
 
-FirehoseStreamActivityLogs:
+  FirehoseStreamActivityLogs:
     Type: AWS::KinesisFirehose::DeliveryStream
     ProperTipes:
       DeliveryStreamName: test_user3  
