@@ -111,18 +111,19 @@ Resources:
       ExtendedS3DestinationConfiguration:
         BucketARN: arn:aws:s3:::"akane-test-deploy-bucket-${EnvName}"
         Prefix: "userActivitylog/key=!{partitionKeyFromQuery:key1}/!{timestamp:'year='yyyy'/month='MM'/day='dd'/hour='HH}/"
-        ErrorOutputPrefix: "errorLog/!{firehose:error-output-type}/dt=!{timestamp:YYYY}-!{timestamp:MM}-!{timestamp:dd}/"
+        ErrorOutputPrefix: error/
         BufferingHints:
           IntervalInSeconds: 60
           SizeInMBs: 128
-        CompressionFormat: GZIP
+        # CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         ProcessingConfiguration:
-          Enabled: false
+          # Enabled: false
+          Enabled: "true"
         DynamicPartitioningConfiguration:
           Enabled: true
-          RetryOptions:
-            DurationInSeconds: 60
+          # RetryOptions:
+            # DurationInSeconds: 60
         CloudWatchLoggingOptions:
           Enabled: true
           LogGroupName: /aws/kinesisfirehose/test_user3
@@ -133,7 +134,7 @@ Resources:
             - Type: MetadataExtraction
               Parameters:
                 - ParameterName: MetadataExtractionQuery
-                  ParameterValue: '{key1: .tutorial}'
+                  ParameterValue: '{key1: .key1}'
                 - ParameterName: JsonParsingEngine
                   ParameterValue: JQ-1.6
             - Type: AppendDelimiterToRecord
@@ -150,7 +151,7 @@ Resources:
     Properties:
       LogGroupName: /aws/kinesisfirehose/test_user3
       RetentionInDays: 365
-      
+
 
 
 
