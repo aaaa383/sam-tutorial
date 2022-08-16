@@ -29,69 +29,69 @@ Resources:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Effect:Allow
-          Principal:
-          Service:
+         - Effect: Allow
+            Principal:
+              Service:
               - firehose.amazonaws.com
-          Action:
-            - sts:AssumeRole
+           Action:
+              - sts:AssumeRole
       Path: /
       Policies:
-        -PolicyName: kinesisFirehosePolicy
-         PolicyDocument:
-          Version: 2012-10-17
-          Statement:
-            - Effect:Allow
-            Action:
-              - "glue:GetTable"
-              - "glue:GetTableVersion"
-              - "glue:GetTableVersions"
-            Resouce:
-              - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:catalog"
-              - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-              - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:table/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-          - Effect: Allow
-            Action:
-               - "s3:AbortMultipartUpload"
-               - "s3:GetBucketLocation"
-               - "s3:GetObject"
-               - "s3:ListBucket"
-               - "s3:ListBucketMultipartUploads"
-               - "s3:PutObject"
-            Resource: "*"
-          - Effect: Allow
-            Action:
-               - "kms:GenerateDataKey"
-               - "kms:Decrypt"
+        - PolicyName: KinesisFirehosePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "glue:GetTable"
+                  - "glue:GetTableVersion"
+                  - "glue:GetTableVersions"
             Resource:
-               - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-            Condition:
-              StringEquals:
-                "kms:ViaService": !Sub "s3.${AWS::Region}.amazonaws.com"
-              StringLike:
-                "kms:EncryptionContext:aws:s3:arn":
-                - "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*"
-                - "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-          - Effect: Allow
-            Action:
+                  - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:catalog"
+                  - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+                  - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:table/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+              - Effect: Allow
+                Action:
+                  - "s3:AbortMultipartUpload"
+                  - "s3:GetBucketLocation"
+                  - "s3:GetObject"
+                  - "s3:ListBucket"
+                  - "s3:ListBucketMultipartUploads"
+                  - "s3:PutObject"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "kms:GenerateDataKey"
+                  - "kms:Decrypt"
+                Resource:
+                  - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+                Condition:
+                  StringEquals:
+                    "kms:ViaService": !Sub "s3.${AWS::Region}.amazonaws.com"
+                  StringLike:
+                    "kms:EncryptionContext:aws:s3:arn":
+                      - "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*"
+                      - "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+              - Effect: Allow
+                Action:
                   - "logs:PutLogEvents"
-            Resource:
+                Resource:
                   - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/*"
                   - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:*"
-          - Effect: Allow
-            Action:
+              - Effect: Allow
+                Action:
                   - "kinesis:DescribeStream"
                   - "kinesis:GetShardIterator"
                   - "kinesis:GetRecords"
                   - "kinesis:ListShards"
-            Resource:
+                Resource:
                   - !Sub "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-          - Effect: Allow
-            Action:
+              - Effect: Allow
+                Action:
                   - "kms:Decrypt"
-            Resource:
+                Resource:
                   - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-            Condition:
+                Condition:
                   StringEquals:
                     "kms:ViaService": !Sub "kinesis.${AWS::Region}.amazonaws.com"
                   StringLike:
