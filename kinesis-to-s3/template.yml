@@ -29,10 +29,10 @@ Resources:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
-          -Effect:Allow
+          - Effect:Allow
           Principal:
-            Service:
-              - firehose.amazomaws.com
+          Service:
+              - firehose.amazonaws.com
           Action:
             - sts:AssumeRole
       Path: /
