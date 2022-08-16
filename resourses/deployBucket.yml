@@ -11,4 +11,4 @@ Resources:
   MyBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "tutorialtest-deploy-bucket-${EnvName}"
+      BucketName: !Sub "second-test-deploy-bucket-${EnvName}"

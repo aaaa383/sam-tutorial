@@ -7,16 +7,16 @@ import boto3
 def main():
 
     # 以下の５つの変数を環境に合わせて変更する
-    accesskey = 'AKIATS576XQZB6VJJ57Q'
-    secretkey = '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'
+    accesskey = 'AKIAUCL276CXSVMAQ5F2'
+    secretkey = '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'
     region = 'ap-northeast-1'
-    stream_name = 'test_user'
-    uuid = 'test01'
+    stream_name = 'test_user2'
+    uuid = 'test03'
 
     client = boto3.client("firehose", aws_access_key_id=accesskey, aws_secret_access_key=secretkey, region_name=region)
 
     count = 0
-    while count < 10 :
+    while count < 100 :
 
         stream_data = {
                 'uuid': uuid,
