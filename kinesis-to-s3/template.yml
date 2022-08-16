@@ -4,15 +4,25 @@ Description: >
 #Creating PKG basic backend environment.
   CloudFormation template 
 
-# Parameters:
-#   EnvName:
-#     Description: "Your environment name here"
-#     Type: String
-#     Default: defalt
-
+Parameters:
+  EnvName:
+    Description: "Your environment name here"
+    Type: String
+    Default: defalt
 
 Resources:
-  # StreamDataBucket:
+  StreamDataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "test-stream-data-bucket-${EnvName}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
   FirehoseRole:
     Type: AWS::IAM::Role
     Properties:
@@ -139,3 +149,6 @@ FirehoseStreamActivityLogs:
     Properties:
       LogGroupName: /aws/kinesisfirehose/test_user3
       RetentionInDays: 365
+
+
+
