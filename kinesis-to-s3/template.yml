@@ -115,15 +115,15 @@ Resources:
         BufferingHints:
           IntervalInSeconds: 60
           SizeInMBs: 128
-        # CompressionFormat: GZIP
+        CompressionFormat: GZIP
         RoleARN: !GetAtt FirehoseRole.Arn
         ProcessingConfiguration:
-          # Enabled: false
-          Enabled: "true"
+          Enabled: false
+          # Enabled: "true"
         DynamicPartitioningConfiguration:
           Enabled: true
-          # RetryOptions:
-            # DurationInSeconds: 60
+          RetryOptions:
+            DurationInSeconds: 60
         CloudWatchLoggingOptions:
           Enabled: true
           LogGroupName: /aws/kinesisfirehose/test_user3
