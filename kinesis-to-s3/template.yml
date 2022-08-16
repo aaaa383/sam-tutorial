@@ -150,6 +150,7 @@ Resources:
     Properties:
       LogGroupName: /aws/kinesisfirehose/test_user3
       RetentionInDays: 365
+      
 
 
 
