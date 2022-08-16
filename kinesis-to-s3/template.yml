@@ -106,7 +106,7 @@ Resources:
 
   FirehoseStreamActivityLogs:
     Type: AWS::KinesisFirehose::DeliveryStream
-    ProperTipes:
+    Properties:
       DeliveryStreamName: test_user3  
       ExtendedS3DestinationConfiguration:
         BucketARN: arn:aws:s3:::"second-test-deploy-bucket-${EnvName}"
