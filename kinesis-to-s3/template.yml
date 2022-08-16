@@ -107,7 +107,7 @@ FirehoseStreamActivityLogs:
     Type: AWS::KinesisFirehose::DeliveryStream
     ProperTipes:
     DeliveryStreamName: test_user3  
-     ExtendedS3DestinationConfiguration:
+    ExtendedS3DestinationConfiguration:
         BucketARN: arn:aws:s3:::"second-test-deploy-bucket-${EnvName}"
         Prefix: "userActivitylog/key=!{partitionKeyFromQuery:key1}/!{timestamp:'year='yyyy'/month='MM'/day='dd'/hour='HH}/"
         ErrorOutputPrefix: "errorLog/!{firehose:error-output-type}/dt=!{timestamp:YYYY}-!{timestamp:MM}-!{timestamp:dd}/"
