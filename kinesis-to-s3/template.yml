@@ -30,7 +30,7 @@ Resources:
         Version: 2012-10-17
         Statement:
          - Effect: Allow
-            Principal:
+            # Principal:
               Service:
               - firehose.amazonaws.com
            Action:
