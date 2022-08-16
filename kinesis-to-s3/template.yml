@@ -109,7 +109,7 @@ Resources:
     Properties:
       DeliveryStreamName: test_user3  
       ExtendedS3DestinationConfiguration:
-        BucketARN: arn:aws:s3:::"second-test-deploy-bucket-${EnvName}"
+        BucketARN: arn:aws:s3:::"akane-test-deploy-bucket-${EnvName}"
         Prefix: "userActivitylog/key=!{partitionKeyFromQuery:key1}/!{timestamp:'year='yyyy'/month='MM'/day='dd'/hour='HH}/"
         ErrorOutputPrefix: "errorLog/!{firehose:error-output-type}/dt=!{timestamp:YYYY}-!{timestamp:MM}-!{timestamp:dd}/"
         BufferingHints:
