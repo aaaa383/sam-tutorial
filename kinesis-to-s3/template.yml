@@ -27,14 +27,15 @@ Resources:
       RoleName: KinesisFirehoseRole
       Description: This role allows Kinesis Data Firehose to delivery logs into S3.
       AssumeRolePolicyDocument:
-        Version: 2012-10-17
+        Version: "2012-10-17"
         Statement:
-         - Effect: Allow
-            # Principal:
+          - Effect: Allow
+            Principal:
               Service:
-              - firehose.amazonaws.com
-           Action:
+                - firehose.amazonaws.com
+            Action:
               - sts:AssumeRole
+        
       Path: /
       Policies:
         - PolicyName: KinesisFirehosePolicy
