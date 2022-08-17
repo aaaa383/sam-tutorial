@@ -1,19 +1,23 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description:  > 
-  CloudFormation template 
+  CloudFormation APC_HEAD template 
 
 Parameters:
   EnvName:
     Description: "Your environment name here"
     Type: String
     Default: defalt
+  CloudWatchAlarmEmail:
+    Description: "The e-mail to notify errors"
+    Type: String
+    Default: ""
 
 Resources:
   StreamDataBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "akane-test-deploy-bucket-${EnvName}"
+      BucketName: !Sub "test_HEAD-deploy-bucket-${EnvName}"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
@@ -22,113 +26,30 @@ Resources:
       NotificationConfiguration:
         EventBridgeConfiguration:
           EventBridgeEnabled: true
-  
-  FirehoseRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: KinesisFirehoseRole
-      Description: This role allows Kinesis Data Firehose to delivery logs into S3.
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - firehose.amazonaws.com
-            Action:
-              - sts:AssumeRole
-        
-      # Path: /
-      # Policies:
-      #   - PolicyName: KinesisFirehosePolicy
-      #     PolicyDocument:
-      #       Version: "2012-10-17"
-      #       Statement:
-      #         - Effect: Allow
-      #           Action:
-      #             - "glue:GetTable"
-      #             - "glue:GetTableVersion"
-      #             - "glue:GetTableVersions"
-      #       Resource:
-      #             - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:catalog"
-      #             - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-      #             - !Sub "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:table/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-      #         - Effect: Allow
-      #           Action:
-      #             - "s3:AbortMultipartUpload"
-      #             - "s3:GetBucketLocation"
-      #             - "s3:GetObject"
-      #             - "s3:ListBucket"
-      #             - "s3:ListBucketMultipartUploads"
-      #             - "s3:PutObject"
-      #           Resource: "*"
-      #         - Effect: Allow
-      #           Action:
-      #             - "kms:GenerateDataKey"
-      #             - "kms:Decrypt"
-      #           Resource:
-      #             - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-      #           Condition:
-      #             StringEquals:
-      #               "kms:ViaService": !Sub "s3.${AWS::Region}.amazonaws.com"
-      #             StringLike:
-      #               "kms:EncryptionContext:aws:s3:arn":
-      #                 - "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*"
-      #                 - "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-      #         - Effect: Allow
-      #           Action:
-      #             - "logs:PutLogEvents"
-      #           Resource:
-      #             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/*"
-      #             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:*"
-      #         - Effect: Allow
-      #           Action:
-      #             - "kinesis:DescribeStream"
-      #             - "kinesis:GetShardIterator"
-      #             - "kinesis:GetRecords"
-      #             - "kinesis:ListShards"
-      #           Resource:
-      #             - !Sub "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-      #         - Effect: Allow
-      #           Action:
-      #             - "kms:Decrypt"
-      #           Resource:
-      #             - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
-      #           Condition:
-      #             StringEquals:
-      #               "kms:ViaService": !Sub "kinesis.${AWS::Region}.amazonaws.com"
-      #             StringLike:
-      #               "kms:EncryptionContext:aws:kinesis:arn": !Sub "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
 
-# ------------------------------------------------------------#
-# Kinesis Data Firehose delivery stream
-# ------------------------------------------------------------#
 
-  FirehoseStreamActivityLogs:
+  APCHEADKinesisFirehose:
     Type: AWS::KinesisFirehose::DeliveryStream
+    DependsOn: StreamDataBucket
     Properties:
-      DeliveryStreamName: test_user4
+      DeliveryStreamName: test_APC_HEAD
       DeliveryStreamType: DirectPut
       ExtendedS3DestinationConfiguration:
-        BucketARN: !Sub "arn:aws:s3:::akane-test-deploy-bucket-${EnvName}"
-        Prefix: "uuid/!{partitionKeyFromQuery:uuid}/!{timestamp:'year='yyyy'/month='MM'/day='dd'/hour='HH}/"
-        ErrorOutputPrefix: error/
+        BucketARN: !Sub "arn:aws:s3:::test_HEAD-deploy-bucket-${EnvName}"
         BufferingHints:
           IntervalInSeconds: 60
-          SizeInMBs: 128
-        CompressionFormat: GZIP
-        RoleARN: !GetAtt FirehoseRole.Arn
-        ProcessingConfiguration:
-          Enabled: false
-          # Enabled: "true"
+          SizeInMBs: 64
+        ErrorOutputPrefix: error/
+        Prefix: "uuid/!{partitionKeyFromQuery:uuid}/!{timestamp:'year='yyyy'/month='MM'/day='dd'/hour='HH}/"
+        RoleARN: !Sub "${FirehoseRole.Arn}"
         DynamicPartitioningConfiguration:
           Enabled: true
-          RetryOptions:
-            DurationInSeconds: 60
+          # RetryOptions:
+          #   DurationInSeconds: 60
         CloudWatchLoggingOptions:
           Enabled: true
-          LogGroupName: /aws/kinesisfirehose/test_user3
-          LogStreamName: S3Delivery
+          LogGroupName: /aws/kinesisfirehose/test_APC_HEAD
+          LogStreamName: S3Delivery       
         ProcessingConfiguration:
           Enabled: true
           Processors:
@@ -138,11 +59,22 @@ Resources:
                   ParameterValue: '{uuid: .uuid}'
                 - ParameterName: JsonParsingEngine
                   ParameterValue: JQ-1.6
-            - Type: AppendDelimiterToRecord
-              Parameters:
-                - ParameterName: Delimiter
-                  ParameterValue: "\\n"
-    DependsOn: LogGroupFirehoseActivityLogs
+  
+  FirehoseRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: KinesisFirehoseRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - firehose.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+    
 
 # ------------------------------------------------------------#
 # Kinesis Data Firehose Error LogGroup (CloudWatch Logs)
@@ -151,7 +83,7 @@ Resources:
   LogGroupFirehoseActivityLogs:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: /aws/kinesisfirehose/test_user3
+      LogGroupName: /aws/kinesisfirehose/test_APC_HEAD
       RetentionInDays: 365
 
 
